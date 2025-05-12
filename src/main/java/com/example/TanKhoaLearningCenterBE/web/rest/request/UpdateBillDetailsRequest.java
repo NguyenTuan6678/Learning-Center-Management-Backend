@@ -9,6 +9,7 @@ public class UpdateBillDetailsRequest {
     private String description;
     private Double amount;
     private String currency;
+    private String paymentStatus;
     private UUID studentId;
     private UUID parentId;
 }

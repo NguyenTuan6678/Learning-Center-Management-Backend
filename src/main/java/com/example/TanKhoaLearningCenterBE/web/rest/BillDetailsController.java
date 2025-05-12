@@ -5,10 +5,12 @@ import com.example.TanKhoaLearningCenterBE.service.BillDetailService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateBillDetailsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping("/api/billdetails")
 @RequiredArgsConstructor

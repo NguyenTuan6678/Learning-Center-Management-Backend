@@ -8,8 +8,10 @@ import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
 import com.example.TanKhoaLearningCenterBE.exception.ParentNotFoundException;
 import com.example.TanKhoaLearningCenterBE.exception.StudentNotFoundException;
 import com.example.TanKhoaLearningCenterBE.repository.BillDetailRepository;
+import com.example.TanKhoaLearningCenterBE.repository.BillRepository;
 import com.example.TanKhoaLearningCenterBE.repository.ParentRepository;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
+import com.example.TanKhoaLearningCenterBE.utils.bill.BillStatus;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateBillDetailsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BillDetailServiceImpl implements BillDetailService {
+    private final BillRepository billRepository;
     private final BillDetailRepository billDetailRepository;
     private final StudentRepository studentRepository;
     private final ParentRepository parentRepository;
@@ -36,7 +39,15 @@ public class BillDetailServiceImpl implements BillDetailService {
         BillEntity bill = billDetail.getBill();billDetail.setDescription(request.getDescription());
         billDetail.setAmount(request.getAmount());
         billDetail.setCurrency(request.getCurrency());
-        billDetail.setPaymentStatus(bill.getBillStatus().toString());
+        if (request.getPaymentStatus() != null) {
+            billDetail.setPaymentStatus(request.getPaymentStatus());
+
+            BillStatus newBillStatus = mapPaymentStatusToBillStatus(request.getPaymentStatus());
+            if (newBillStatus != null && bill.getBillStatus() != newBillStatus) {
+                bill.setBillStatus(newBillStatus);
+                billRepository.save(bill); // Lưu lại BillEntity với trạng thái mới
+            }
+        }
 
         StudentEntity student = studentRepository.findById(request.getStudentId()).orElseThrow(StudentNotFoundException::new);
         ParentEntity parent = parentRepository.findById(request.getParentId()).orElseThrow(ParentNotFoundException::new);
@@ -57,5 +68,18 @@ public class BillDetailServiceImpl implements BillDetailService {
             return ResponseEntity.ok(new BillDetailDTO(optionalBillDetail.get()));
         }
         throw new RuntimeException("Bill not found");
+    }
+
+    private BillStatus mapPaymentStatusToBillStatus(String paymentStatus) {
+        switch (paymentStatus.toUpperCase()) {
+            case "PENDING_PAYMENT":
+                return BillStatus.PENDING_PAYMENT;
+            case "PAID":
+                return BillStatus.PAID;
+            case "CANCELLED":
+                return BillStatus.CANCELLED;
+            default:
+                return null;
+        }
     }
 }

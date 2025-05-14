@@ -16,6 +16,8 @@ public interface StudentService {
 
     ResponseEntity<?> delete(UUID id);
 
+    ResponseEntity<StudentDTO> get(UUID id);
+
     ResponseEntity<PageResponse<StudentDTO>> getAll(Integer page, Integer size);
 
     ResponseEntity<List<StudentDTO>> search(String name);

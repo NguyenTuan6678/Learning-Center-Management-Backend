@@ -18,7 +18,7 @@ public class BillDetailsController {
     private final BillDetailService billDetailService;
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<BillDetailDTO> update(@PathVariable UUID id, @RequestBody UpdateBillDetailsRequest request) {
+    public ResponseEntity<BillDetailDTO> updateBillDetail(@PathVariable UUID id, @RequestBody UpdateBillDetailsRequest request) {
         return billDetailService.update(id, request);
     }
 

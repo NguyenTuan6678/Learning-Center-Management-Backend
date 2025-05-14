@@ -1,11 +1,17 @@
 package com.example.TanKhoaLearningCenterBE.service;
 
 import com.example.TanKhoaLearningCenterBE.dto.StudentDTO;
+import com.example.TanKhoaLearningCenterBE.entity.AccountEntity;
 import com.example.TanKhoaLearningCenterBE.entity.BillDetailEntity;
 import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
+import com.example.TanKhoaLearningCenterBE.exception.AccountAlreadyAssignedException;
+import com.example.TanKhoaLearningCenterBE.exception.AccountNotFoundException;
+import com.example.TanKhoaLearningCenterBE.exception.InvalidAccountRoleException;
 import com.example.TanKhoaLearningCenterBE.exception.StudentNotFoundException;
+import com.example.TanKhoaLearningCenterBE.repository.AccountRepository;
 import com.example.TanKhoaLearningCenterBE.repository.BillDetailRepository;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
+import com.example.TanKhoaLearningCenterBE.utils.user.Role;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateStudentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateStudentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
@@ -23,9 +29,10 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class StudentServiceImp implements StudentService{
+public class StudentServiceImpl implements StudentService{
     private final StudentRepository studentRepository;
     private final BillDetailRepository billDetailRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public ResponseEntity<StudentDTO> create(CreateStudentRequest request) {
@@ -53,6 +60,24 @@ public class StudentServiceImp implements StudentService{
 
             if (!command.getEmail().isBlank()) {
                 stud.setStdEmail(command.getEmail());
+            }
+
+            if (command.getAccountId() != null) {
+                Optional<AccountEntity> accountOptional = accountRepository.findById(command.getAccountId());
+                if (accountOptional.isPresent()) {
+                    AccountEntity account = accountOptional.get();
+                    if (account.getRole() == Role.STUDENT) {
+                        if (isAccountAssigned(account.getAccountId()))
+                        {
+                            throw new AccountAlreadyAssignedException();
+                        }
+                        stud.setAccountIds(account);
+                    } else {
+                        throw new InvalidAccountRoleException();
+                    }
+                } else {
+                    throw new AccountNotFoundException();
+                }
             }
 
             var res = studentRepository.save(stud);
@@ -92,11 +117,25 @@ public class StudentServiceImp implements StudentService{
     }
 
     @Override
+    public ResponseEntity<StudentDTO> get(UUID id) {
+        Optional<StudentEntity> optionalStudent = studentRepository.findById(id);
+        if (optionalStudent.isPresent()) {
+            return ResponseEntity.ok(new StudentDTO(optionalStudent.get()));
+        }
+        throw new StudentNotFoundException();
+    }
+
+    @Override
     public ResponseEntity<List<StudentDTO>> search(String name) {
         List<StudentEntity> studentEntityList = studentRepository.findByStdNameContainingIgnoreCase(name);
         if (!studentEntityList.isEmpty()) {
             return ResponseEntity.ok(studentEntityList.stream().map(StudentDTO::new).toList());
         }
         throw new StudentNotFoundException();
+    }
+
+    private boolean isAccountAssigned(UUID accountId) {
+
+        return studentRepository.existsByAccountIds_AccountId(accountId);
     }
 }

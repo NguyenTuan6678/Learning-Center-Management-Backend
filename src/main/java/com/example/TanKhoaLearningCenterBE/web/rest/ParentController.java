@@ -3,6 +3,7 @@ package com.example.TanKhoaLearningCenterBE.web.rest;
 import com.example.TanKhoaLearningCenterBE.dto.ParentDTO;
 import com.example.TanKhoaLearningCenterBE.service.ParentService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateParentRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateParentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,11 @@ public class ParentController {
     @PostMapping("/create")
     public ResponseEntity<ParentDTO> createParent(@RequestBody CreateParentRequest request) {
         return parentService.create(request);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ParentDTO> updateTeacher(@PathVariable UUID id, @RequestBody UpdateParentRequest request) {
+        return parentService.put(id, request);
     }
 
     @GetMapping("/listAll")

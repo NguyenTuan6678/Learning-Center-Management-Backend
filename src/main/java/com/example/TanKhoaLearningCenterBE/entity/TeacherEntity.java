@@ -27,5 +27,5 @@ public class TeacherEntity extends AuditEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId")
     @ToString.Exclude
-    private AccountEntity accountId;
+    private AccountEntity accountIds;
 }

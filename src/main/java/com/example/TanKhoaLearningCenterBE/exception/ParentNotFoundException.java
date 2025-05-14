@@ -10,7 +10,7 @@ public class ParentNotFoundException extends RuntimeException {
     private static final Logger logger = LoggerFactory.getLogger(ParentNotFoundException.class);
 
     public ParentNotFoundException() {
-        super(ErrorMessages.PARENT_NOT_FOUNT.getMessage());
+        super(ErrorMessages.PARENT_NOT_FOUND.getMessage());
         logger.error("***Exception {} thrown.", getClass());
     }
 }

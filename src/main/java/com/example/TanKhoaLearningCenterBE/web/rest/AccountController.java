@@ -23,28 +23,28 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CreateAccountRequest account) {
+    public ResponseEntity<?> createAccount(@RequestBody CreateAccountRequest account) {
         return accountService.create(account);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteAccount(@PathVariable UUID id) {
         log.info("🔐 Request to delete account {}", id);
         return accountService.delete(id);
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<AccountDTO> put(@PathVariable UUID id, @RequestBody UpdateAccountRequest request) {
+    public ResponseEntity<AccountDTO> updateAccount(@PathVariable UUID id, @RequestBody UpdateAccountRequest request) {
         return accountService.put(id, request);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<AccountDTO>> search(@RequestParam String name) {
+    public ResponseEntity<List<AccountDTO>> searchAcccount(@RequestParam String name) {
         return accountService.search(name);
     }
 
     @GetMapping("/listacc")
-    public ResponseEntity<PageResponse<AccountDTO>> getAll(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+    public ResponseEntity<PageResponse<AccountDTO>> getAllAccount(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return accountService.getAll(page, size);
     }

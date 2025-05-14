@@ -15,7 +15,7 @@ public class VNPAYController {
     private final VNPAYService vnpayService;
 
     @PostMapping("/createPaymentUrl")
-    public String submidOrder(@RequestParam int orderTotal, @RequestParam String orderInfo, HttpServletRequest request) {
+    public String submitOrder(@RequestParam int orderTotal, @RequestParam String orderInfo, HttpServletRequest request) {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         String vnpayUrl = vnpayService.createOrder(orderTotal, orderInfo, baseUrl);
         return "redirect:" + vnpayUrl;

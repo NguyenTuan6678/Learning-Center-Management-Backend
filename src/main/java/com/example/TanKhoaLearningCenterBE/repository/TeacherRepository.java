@@ -4,8 +4,12 @@ import com.example.TanKhoaLearningCenterBE.entity.TeacherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface TeacherEntityRepository extends JpaRepository<TeacherEntity, UUID> {
+public interface TeacherRepository extends JpaRepository<TeacherEntity, UUID> {
+    List<TeacherEntity> findByTeacherNameContainingIgnoreCase(String name);
+
+    boolean existsByAccountIds_AccountId(UUID accountId);
 }

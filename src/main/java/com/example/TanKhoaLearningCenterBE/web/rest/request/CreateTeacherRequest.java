@@ -2,12 +2,9 @@ package com.example.TanKhoaLearningCenterBE.web.rest.request;
 
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
-public class UpdateStudentRequest {
+public class CreateTeacherRequest {
     private String name;
     private String phoneNumber;
     private String email;
-    private UUID accountId;
 }

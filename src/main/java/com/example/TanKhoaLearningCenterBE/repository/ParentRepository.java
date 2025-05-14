@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface ParentRepository extends JpaRepository<ParentEntity, UUID> {
     List<ParentEntity> findByParentNameContainingIgnoreCase(String name);
+
+    boolean existsByAccountIds_AccountId(UUID accountId);
 }

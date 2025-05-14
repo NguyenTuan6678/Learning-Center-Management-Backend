@@ -64,22 +64,17 @@ public class BillDetailServiceImpl implements BillDetailService {
     public ResponseEntity<BillDetailDTO> get(UUID id) {
         Optional<BillDetailEntity> optionalBillDetail = billDetailRepository.findById(id);
         if (optionalBillDetail.isPresent()) {
-            billDetailRepository.findById(id);
             return ResponseEntity.ok(new BillDetailDTO(optionalBillDetail.get()));
         }
         throw new RuntimeException("Bill not found");
     }
 
     private BillStatus mapPaymentStatusToBillStatus(String paymentStatus) {
-        switch (paymentStatus.toUpperCase()) {
-            case "PENDING_PAYMENT":
-                return BillStatus.PENDING_PAYMENT;
-            case "PAID":
-                return BillStatus.PAID;
-            case "CANCELLED":
-                return BillStatus.CANCELLED;
-            default:
-                return null;
-        }
+        return switch (paymentStatus.toUpperCase()) {
+            case "PENDING_PAYMENT" -> BillStatus.PENDING_PAYMENT;
+            case "PAID" -> BillStatus.PAID;
+            case "CANCELLED" -> BillStatus.CANCELLED;
+            default -> null;
+        };
     }
 }

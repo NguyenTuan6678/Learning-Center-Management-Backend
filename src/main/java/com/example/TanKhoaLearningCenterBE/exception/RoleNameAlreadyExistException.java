@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class RoleNameAlreadyExistException extends RuntimeException {
   private static final Logger logger = LoggerFactory.getLogger(RoleNameAlreadyExistException.class);
 
-  public RoleNameAlreadyExistException(String username){
+  public RoleNameAlreadyExistException(){
     super(ErrorMessages.ROLENAME_ALREADY_EXIST.getMessage());
     logger.error("***Exception {} thrown.", getClass());
   }

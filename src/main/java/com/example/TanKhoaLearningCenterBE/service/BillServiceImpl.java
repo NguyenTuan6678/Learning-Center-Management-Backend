@@ -3,14 +3,8 @@ package com.example.TanKhoaLearningCenterBE.service;
 import com.example.TanKhoaLearningCenterBE.dto.BillDTO;
 import com.example.TanKhoaLearningCenterBE.entity.BillDetailEntity;
 import com.example.TanKhoaLearningCenterBE.entity.BillEntity;
-import com.example.TanKhoaLearningCenterBE.entity.ParentEntity;
-import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
-import com.example.TanKhoaLearningCenterBE.exception.ParentNotFoundException;
-import com.example.TanKhoaLearningCenterBE.exception.StudentNotFoundException;
 import com.example.TanKhoaLearningCenterBE.repository.BillDetailRepository;
 import com.example.TanKhoaLearningCenterBE.repository.BillRepository;
-import com.example.TanKhoaLearningCenterBE.repository.ParentRepository;
-import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateBillRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,8 +22,6 @@ import java.util.List;
 public class BillServiceImpl implements BillService {
     private final BillRepository billRepository;
     private final BillDetailRepository billDetailRepository;
-    private final StudentRepository studentRepository;
-    private final ParentRepository parentRepository;
 
     @Override
     public ResponseEntity<BillDTO> create(CreateBillRequest request) {

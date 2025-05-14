@@ -27,7 +27,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AccountServiceImp implements AccountService {
+public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder encoder;
     private final AccountRepository accountRepository;
 

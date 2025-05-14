@@ -29,8 +29,7 @@ public class StudentController {
     }
 
     @GetMapping("/studentList")
-    public ResponseEntity<PageResponse<StudentDTO>> getStudents(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-                                                                @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+    public ResponseEntity<PageResponse<StudentDTO>> getStudents(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return studentService.getAll(page, size);
     }
 

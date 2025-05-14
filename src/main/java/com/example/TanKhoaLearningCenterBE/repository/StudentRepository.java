@@ -13,6 +13,8 @@ import java.util.UUID;
 public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
     List<StudentEntity> findByStdNameContainingIgnoreCase(String name);
 
+    boolean existsByAccountIds_AccountId(UUID accountId);
+
 //    @Query(value = "SELECT p FROM StudentEntity p WHERE 1=1 and p.stdName LIKE %:keyword%")
 //    List<StudentEntity> findByNameCustom(@Param("keyword") String name);
 }

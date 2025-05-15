@@ -14,18 +14,24 @@ import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateStudentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateStudentRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -137,5 +143,84 @@ public class StudentServiceImpl implements StudentService{
     private boolean isAccountAssigned(UUID accountId) {
 
         return studentRepository.existsByAccountIds_AccountId(accountId);
+    }
+
+    @Override
+    public ResponseEntity<FileUploadResponse> uploadStudentsFromExcel(MultipartFile file) {
+        FileUploadResponse response = new FileUploadResponse();
+        if (file.isEmpty()) {
+            response.setMessage("Please Upload the file!");
+            response.setSuccessfulCount(0);
+            return ResponseEntity.badRequest().body(response);
+        }
+        try {
+            List<CreateStudentRequest> students = processExcelFile(file);
+            saveStudents(students);
+            response.setMessage("Student uploaded successfully!");
+            response.setSuccessfulCount(students.size());
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            response.setMessage("Failed to upload students: " + e.getMessage());
+            response.setSuccessfulCount(0);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @Override
+    public List<CreateStudentRequest> processExcelFile(MultipartFile file) throws IOException {
+        List<CreateStudentRequest> students = new ArrayList<>();
+        try (InputStream inputStream = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            if (rowIterator.hasNext()) {
+                rowIterator.next();
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                CreateStudentRequest studentRequest = new CreateStudentRequest();
+
+                Cell nameCell = row.getCell(0);
+                Cell phoneCell = row.getCell(1);
+                Cell emailCell = row.getCell(2);
+
+                studentRequest.setName(getStringCellValue(nameCell));
+                studentRequest.setPhoneNumber(getStringCellValue(phoneCell));
+                studentRequest.setEmail(getStringCellValue(emailCell));
+
+                students.add(studentRequest);
+            }
+        }
+        return students;
+    }
+
+    private String getStringCellValue(Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+        cell.setCellType(CellType.STRING);
+        return cell.getStringCellValue().trim();
+    }
+
+    @Override
+    @Transactional
+    public void saveStudents(List<CreateStudentRequest> studentRequests) {
+        List<StudentEntity> studentEntities = studentRequests.stream()
+                .map(this::convertToEntity)
+                .collect(Collectors.toList());
+        studentRepository.saveAll(studentEntities);
+    }
+
+    private StudentEntity convertToEntity(CreateStudentRequest request) {
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setStdName(request.getName());
+        studentEntity.setStdPhoneNumber(request.getPhoneNumber());
+        studentEntity.setStdEmail(request.getEmail());
+
+        return studentEntity;
     }
 }

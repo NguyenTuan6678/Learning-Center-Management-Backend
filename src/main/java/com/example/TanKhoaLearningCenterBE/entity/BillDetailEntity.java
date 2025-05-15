@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "bill_details")
+@Table(name = "billdetails")
 public class BillDetailEntity extends AuditEntity{
     @Id
     @GeneratedValue
@@ -20,11 +20,11 @@ public class BillDetailEntity extends AuditEntity{
     private BillEntity bill;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", nullable = true)
+    @JoinColumn(name = "student_id")
     private StudentEntity student;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id", nullable = true)
+    @JoinColumn(name = "parent_id")
     private ParentEntity parent;
 
     @Column(name = "description", nullable = false)

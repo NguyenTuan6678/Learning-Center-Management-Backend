@@ -43,6 +43,9 @@ public class AccountServiceImpl implements AccountService {
         acct.setUserName(request.getUsername());
         acct.setPassWord(encoder.encode(request.getPassword()));
         acct.setRole(request.getRole());
+        if (request.getRole() == Role.ADMIN) {
+            throw new IllegalArgumentException("Cannot created ADMIN account");
+        }
         var saveAcct = accountRepository.save(acct);
 //        log.info("***Create account: {}", saveAcct);
 

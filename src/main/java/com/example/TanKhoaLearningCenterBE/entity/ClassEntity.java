@@ -21,7 +21,17 @@ public class ClassEntity extends AuditEntity {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(cascade =  CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "courseId")
-    private CourseEntity courseIds;
+    private CourseEntity course;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "teacherId")
+    private TeacherEntity teacher;
+
+    @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClassStudentEntity> classStudents;
+
+    @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AttendanceEntity> attendances;
 }

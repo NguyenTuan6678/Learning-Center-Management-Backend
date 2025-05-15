@@ -3,7 +3,6 @@ package com.example.TanKhoaLearningCenterBE.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,5 +24,9 @@ public class TimeTableEntity extends AuditEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "classId")
-    private ClassEntity classIds;
+    private ClassEntity clazz;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "courseId", nullable = false)
+    private CourseEntity course;
 }

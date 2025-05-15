@@ -1,5 +1,6 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
+import com.example.TanKhoaLearningCenterBE.utils.classes.ClassStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "attendance")
+@Table(name = "attendances")
 public class AttendanceEntity extends AuditEntity {
     @Id
     @GeneratedValue
@@ -16,9 +17,12 @@ public class AttendanceEntity extends AuditEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "studentId")
-    private StudentEntity studentIds;
+    private StudentEntity student;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "classId")
-    private ClassEntity classIds;
+    private ClassEntity clazz;
+
+    @Column(name = "status")
+    private ClassStatus status;
 }

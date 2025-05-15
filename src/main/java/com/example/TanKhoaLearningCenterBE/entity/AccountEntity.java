@@ -33,6 +33,7 @@ public class AccountEntity extends AuditEntity implements UserDetails {
     @Column(name = "password")
     private String passWord;
 
+    @NotNull(message = "Role is required")
     @Enumerated(EnumType.STRING)
     private Role role;
 

@@ -22,5 +22,5 @@ public class UserProfileEntity extends AuditEntity {
     private byte avatar;
 
     @Column(name = "gender")
-    private boolean gender;
+    private String gender;
 }

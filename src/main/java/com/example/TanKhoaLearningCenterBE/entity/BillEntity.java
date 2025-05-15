@@ -22,6 +22,6 @@ public class BillEntity extends AuditEntity {
     @Enumerated(EnumType.STRING)
     private BillStatus billStatus;
 
-    @OneToOne(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "bill", cascade = CascadeType.ALL  )
     private BillDetailEntity billDetailEntity;
 }

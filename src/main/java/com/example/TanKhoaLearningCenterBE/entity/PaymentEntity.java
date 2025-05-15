@@ -22,7 +22,7 @@ public class PaymentEntity extends AuditEntity {
 
     @Column(name = "amount", nullable = false)
     @PositiveOrZero(message = "Amount cannot be negative")
-    private Long amount;
+    private Double amount;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "billId")

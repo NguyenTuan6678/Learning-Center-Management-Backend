@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.ToString;
-import org.hibernate.validator.constraints.UniqueElements;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -36,4 +37,7 @@ public class StudentEntity extends AuditEntity {
     @JoinColumn(name = "accountId")
     @ToString.Exclude
     private AccountEntity accountIds;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClassStudentEntity> classStudents;
 }

@@ -4,10 +4,12 @@ import com.example.TanKhoaLearningCenterBE.dto.ParentDTO;
 import com.example.TanKhoaLearningCenterBE.service.ParentService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateParentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateParentRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,5 +43,10 @@ public class ParentController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteParent(@PathVariable UUID id) {
         return parentService.delete(id);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<FileUploadResponse> uploadParentsFromExcel(@RequestParam("file") MultipartFile file) {
+        return parentService.uploadParentsFromExcel(file);
     }
 }

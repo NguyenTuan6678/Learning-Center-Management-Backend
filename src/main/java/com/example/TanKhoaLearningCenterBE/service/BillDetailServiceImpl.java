@@ -71,8 +71,9 @@ public class BillDetailServiceImpl implements BillDetailService {
 
     private BillStatus mapPaymentStatusToBillStatus(String paymentStatus) {
         return switch (paymentStatus.toUpperCase()) {
-            case "PENDING_PAYMENT" -> BillStatus.PENDING_PAYMENT;
+            case "PENDING" -> BillStatus.PENDING;
             case "PAID" -> BillStatus.PAID;
+            case "FAILED" -> BillStatus.FAILED;
             case "CANCELLED" -> BillStatus.CANCELLED;
             default -> null;
         };

@@ -14,19 +14,25 @@ import com.example.TanKhoaLearningCenterBE.repository.ParentRepository;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateParentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateParentRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -140,5 +146,85 @@ public class ParentServiceImpl implements ParentService {
     private boolean isAccountAssigned(UUID accountId) {
 
         return parentRepository.existsByAccountIds_AccountId(accountId);
+    }
+
+    @Override
+    public ResponseEntity<FileUploadResponse> uploadParentsFromExcel(MultipartFile file) {
+        FileUploadResponse response = new FileUploadResponse();
+        if (file.isEmpty()) {
+            response.setMessage("Please Upload the file!");
+            response.setSuccessfulCount(0);
+            return ResponseEntity.badRequest().body(response);
+        }
+        try {
+            List<CreateParentRequest> parents = processExcelFile(file);
+            saveParents(parents);
+            response.setMessage("Parent uploaded successfully!");
+            response.setSuccessfulCount(parents.size());
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            response.setMessage("Failed to upload parents: " + e.getMessage());
+            response.setSuccessfulCount(0);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    private String getStringCellValue(Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+        cell.setCellType(CellType.STRING);
+        return cell.getStringCellValue().trim();
+    }
+
+    @Override
+    public List<CreateParentRequest> processExcelFile(MultipartFile file) throws IOException {
+        List<CreateParentRequest> parents = new ArrayList<>();
+        try (InputStream inputStream = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            if (rowIterator.hasNext()) {
+                rowIterator.next();
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                CreateParentRequest parentRequest = new CreateParentRequest();
+
+                Cell nameCell = row.getCell(0);
+                Cell phoneCell = row.getCell(1);
+                Cell emailCell = row.getCell(2);
+
+                parentRequest.setName(getStringCellValue(nameCell));
+                parentRequest.setPhoneNumber(getStringCellValue(phoneCell));
+                parentRequest.setEmail(getStringCellValue(emailCell));
+
+                parents.add(parentRequest);
+            }
+        }
+        return parents;
+    }
+
+    @Override
+    @Transactional
+    public void saveParents(List<CreateParentRequest> parentRequests) {
+        List<ParentEntity> parentEntities = parentRequests
+                .stream()
+                .map(this::converToEntity)
+                .collect(Collectors.toList());
+        parentRepository.saveAll(parentEntities);
+    }
+
+    private ParentEntity converToEntity(CreateParentRequest request) {
+        ParentEntity parentEntity = new ParentEntity();
+        parentEntity.setParentName(request.getName());
+        parentEntity.setParPhoneNumber(request.getPhoneNumber());
+        parentEntity.setParEmail(request.getEmail());
+
+        return parentEntity;
     }
 }

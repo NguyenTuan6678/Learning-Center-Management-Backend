@@ -1,10 +1,9 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
+import com.example.TanKhoaLearningCenterBE.utils.bill.BillStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
@@ -16,15 +15,18 @@ public class PaymentEntity extends AuditEntity {
     @Column(name = "paymentId")
     private UUID paymentId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "payMId")
-    private PaymentMethodEntity payMIds;
+    @OneToOne
+    @JoinColumn(name = "bill_id", unique = true)
+    private BillEntity bill;
 
-    @Column(name = "amount", nullable = false)
-    @PositiveOrZero(message = "Amount cannot be negative")
+    @ManyToOne
+    @JoinColumn(name = "payment_method_id")
+    private PaymentMethodEntity paymentMethod;
+
+    @Column(nullable = false)
     private Double amount;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "billId")
-    private BillEntity billIds;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BillStatus status;
 }

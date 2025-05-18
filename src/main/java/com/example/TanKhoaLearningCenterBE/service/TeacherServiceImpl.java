@@ -11,18 +11,24 @@ import com.example.TanKhoaLearningCenterBE.repository.TeacherRepository;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateTeacherRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateTeacherRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -127,5 +133,84 @@ public class TeacherServiceImpl implements TeacherService {
     private boolean isAccountAssigned(UUID accountId) {
 
         return teacherRepository.existsByAccountIds_AccountId(accountId);
+    }
+
+    @Override
+    public ResponseEntity<FileUploadResponse> uploadStudentsFromExcel(MultipartFile file) {
+        FileUploadResponse response = new FileUploadResponse();
+        if (file.isEmpty()) {
+            response.setMessage("Please Upload the file!");
+            response.setSuccessfulCount(0);
+            return ResponseEntity.badRequest().body(response);
+        }
+        try {
+            List<CreateTeacherRequest> teachers = processExcelFile(file);
+            saveTeachers(teachers);
+            response.setMessage("Teacher uploaded successfully!");
+            response.setSuccessfulCount(teachers.size());
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            response.setMessage("Failed to upload teachers: " + e.getMessage());
+            response.setSuccessfulCount(0);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    private String getStringCellValue(Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+        cell.setCellType(CellType.STRING);
+        return cell.getStringCellValue().trim();
+    }
+
+    @Override
+    public List<CreateTeacherRequest> processExcelFile(MultipartFile file) throws IOException {
+        List<CreateTeacherRequest> teachers = new ArrayList<>();
+        try (InputStream inputStream = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            if (rowIterator.hasNext()) {
+                rowIterator.next();
+            }
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                CreateTeacherRequest teacherRequest = new CreateTeacherRequest();
+
+                Cell nameCell = row.getCell(0);
+                Cell phoneCell = row.getCell(1);
+                Cell emailCell = row.getCell(2);
+
+                teacherRequest.setName(getStringCellValue(nameCell));
+                teacherRequest.setPhoneNumber(getStringCellValue(phoneCell));
+                teacherRequest.setEmail(getStringCellValue(emailCell));
+
+                teachers.add(teacherRequest);
+            }
+        }
+        return teachers;
+    }
+
+    @Override
+    @Transactional
+    public void saveTeachers(List<CreateTeacherRequest> teacherRequests) {
+        List<TeacherEntity> teacherEntities = teacherRequests.stream()
+                .map(this::converToEntity)
+                .collect(Collectors.toList());
+        teacherRepository.saveAll(teacherEntities);
+    }
+
+    private TeacherEntity converToEntity(CreateTeacherRequest request) {
+        TeacherEntity teacherEntity = new TeacherEntity();
+        teacherEntity.setTeacherName(request.getName());
+        teacherEntity.setTphoneNumber(request.getPhoneNumber());
+        teacherEntity.setTEmail(request.getEmail());
+
+        return teacherEntity;
     }
 }

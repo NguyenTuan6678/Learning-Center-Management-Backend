@@ -1,23 +1,52 @@
 package com.example.TanKhoaLearningCenterBE.web.rest;
 
-import com.example.TanKhoaLearningCenterBE.service.VNPAYService;
+import com.example.TanKhoaLearningCenterBE.dto.PaymentDTO;
+import com.example.TanKhoaLearningCenterBE.service.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
+import java.util.UUID;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/payments")
 public class VNPAYController {
-    private final VNPAYService vnpayService;
+    private final VNPayService vnPayService;
 
-    @PostMapping("/createPaymentUrl")
-    public String submitOrder(@RequestParam int orderTotal, @RequestParam String orderInfo, HttpServletRequest request) {
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnpayService.createOrder(orderTotal, orderInfo, baseUrl);
-        return "redirect:" + vnpayUrl;
+    @PostMapping("/vnpay/{billId}")
+    public ResponseEntity<PaymentDTO.VNPayResponse> createVNPayPayment(
+            @PathVariable UUID billId,
+            HttpServletRequest request) {
+        return ResponseEntity.ok(vnPayService.createVNPayPayment(billId, request));
+    }
+
+    @GetMapping("/vnpay/callback")
+    public ResponseEntity<PaymentDTO.PaymentResponse> handleVNPayCallback(
+            HttpServletRequest request,
+            @RequestParam Map<String, String> callbackParams) {
+
+        log.info("Received VNPay callback with params: {}", callbackParams);
+        try {
+            PaymentDTO.PaymentResponse response = vnPayService.handleVNPayCallback(request);
+            return ResponseEntity.ok(response);
+        } catch (ResponseStatusException e) {
+            log.error("VNPay callback processing failed: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    // Endpoint kiểm tra trạng thái thanh toán
+    @GetMapping("/status/{paymentId}")
+    public ResponseEntity<PaymentDTO.PaymentResponse> checkPaymentStatus(
+            @PathVariable UUID paymentId) {
+
+        log.info("Checking payment status for: {}", paymentId);
+        return ResponseEntity.ok(vnPayService.getPaymentStatus(paymentId));
     }
 }

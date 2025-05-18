@@ -4,10 +4,12 @@ import com.example.TanKhoaLearningCenterBE.dto.TeacherDTO;
 import com.example.TanKhoaLearningCenterBE.service.TeacherService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateTeacherRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateTeacherRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,5 +45,10 @@ public class TeacherController {
     @GetMapping("/search")
     public ResponseEntity<List<TeacherDTO>> searchTeacher(@RequestParam String name) {
         return teacherService.search(name);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<FileUploadResponse> uploadTeacherFromExcel(@RequestParam("file")MultipartFile file) {
+        return teacherService.uploadStudentsFromExcel(file);
     }
 }

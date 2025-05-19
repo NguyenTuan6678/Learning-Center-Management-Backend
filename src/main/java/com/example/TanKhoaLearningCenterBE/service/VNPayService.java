@@ -81,8 +81,8 @@ public class VNPayService {
     private String buildVNPayPaymentUrl(Map<String, String> params) {
         String queryUrl = VNPayUtil.getPaymentURL(params, true);
         String hashData = VNPayUtil.getPaymentURL(params, false);
-        String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.vnp_SecretKey, hashData);
-        return vnPayConfig.vnp_PayUrl + "?" + queryUrl + "&vnp_SecureHash=" + vnpSecureHash;
+        String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
+        return vnPayConfig.getPayUrl() + "?" + queryUrl + "&vnp_SecureHash=" + vnpSecureHash;
     }
 
     public PaymentDTO.PaymentResponse getPaymentStatus(UUID paymentId) {
@@ -167,7 +167,7 @@ public class VNPayService {
                     .collect(Collectors.joining("&"));
 
             // Tạo chữ ký
-            String calculatedHash = VNPayUtil.hmacSHA512(vnPayConfig.vnp_SecretKey, hashData);
+            String calculatedHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
             return calculatedHash.equalsIgnoreCase(vnpSecureHash);
         } catch (Exception e) {
             log.error("Error validating VNPay callback", e);

@@ -2,6 +2,7 @@ package com.example.TanKhoaLearningCenterBE.config;
 
 import com.example.TanKhoaLearningCenterBE.utils.VNPayProperties;
 import com.example.TanKhoaLearningCenterBE.utils.VNPayUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
 //import javax.crypto.Mac;
@@ -15,9 +16,9 @@ import java.util.*;
 
 
 @Configuration
+@RequiredArgsConstructor
 public class VNPayConfiguration {
-
-    private VNPayProperties vnpayProperties;
+    private final VNPayProperties vnpayProperties;
 
     public Map<String, String> getVNPayConfig() {
         Map<String, String> vnpParamsMap = new HashMap<>();
@@ -41,5 +42,13 @@ public class VNPayConfiguration {
         vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
 
         return vnpParamsMap;
+    }
+
+    public String getSecretKey() {
+        return vnpayProperties.getSecretKey();
+    }
+
+    public String getPayUrl() {
+        return vnpayProperties.getPayUrl();
     }
 }

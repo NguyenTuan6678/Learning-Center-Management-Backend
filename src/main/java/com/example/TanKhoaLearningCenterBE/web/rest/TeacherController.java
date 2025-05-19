@@ -18,7 +18,6 @@ import java.util.UUID;
 @RequestMapping("/api/teacher")
 @RequiredArgsConstructor
 public class TeacherController {
-
     private final TeacherService teacherService;
 
     @PostMapping("/create")

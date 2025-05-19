@@ -3,6 +3,6 @@ package com.example.TanKhoaLearningCenterBE.web.rest.request;
 import lombok.Data;
 
 @Data
-public class CreateDayRequest {
-    private String day;
+public class UpdateReviewRequest {
+    private String description;
 }

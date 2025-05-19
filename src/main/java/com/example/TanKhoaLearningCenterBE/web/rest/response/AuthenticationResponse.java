@@ -21,4 +21,10 @@ public class AuthenticationResponse {
 
     @JsonProperty("id")
     private UUID userId;
+
+    @JsonProperty("studentId")
+    private UUID studentId;
+
+    @JsonProperty("teacherId")
+    private UUID teacherId;
 }

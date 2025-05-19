@@ -5,6 +5,7 @@ import com.example.TanKhoaLearningCenterBE.service.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,18 +31,19 @@ public class VNPAYController {
     public ResponseEntity<PaymentDTO.PaymentResponse> handleVNPayCallback(
             HttpServletRequest request,
             @RequestParam Map<String, String> callbackParams) {
-
-        log.info("Received VNPay callback with params: {}", callbackParams);
+        log.info("VNPay callback invoked");
         try {
             PaymentDTO.PaymentResponse response = vnPayService.handleVNPayCallback(request);
             return ResponseEntity.ok(response);
         } catch (ResponseStatusException e) {
             log.error("VNPay callback processing failed: {}", e.getMessage());
-            throw e;
+            return ResponseEntity.status(e.getStatusCode()).body(null);
+        } catch (Exception e) {
+            log.error("Unexpected error in VNPay callback", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    // Endpoint kiểm tra trạng thái thanh toán
     @GetMapping("/status/{paymentId}")
     public ResponseEntity<PaymentDTO.PaymentResponse> checkPaymentStatus(
             @PathVariable UUID paymentId) {

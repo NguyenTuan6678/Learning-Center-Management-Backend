@@ -1,6 +1,10 @@
 package com.example.TanKhoaLearningCenterBE.web.rest;
 
 import com.example.TanKhoaLearningCenterBE.dto.StudentDTO;
+import com.example.TanKhoaLearningCenterBE.entity.AccountEntity;
+import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
+import com.example.TanKhoaLearningCenterBE.exception.StudentNotFoundException;
+import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.service.StudentService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateStudentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateStudentRequest;
@@ -11,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -19,6 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StudentController {
     private final StudentService studentService;
+    private final StudentRepository studentRepository;
 
     @PostMapping("/create")
     public ResponseEntity<StudentDTO> createStudent(@RequestBody CreateStudentRequest student) {

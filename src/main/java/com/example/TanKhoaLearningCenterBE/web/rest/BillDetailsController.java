@@ -8,9 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
-@PreAuthorize("hasRole('ADMIN')")
+//@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping("/api/billdetails")
 @RequiredArgsConstructor
@@ -25,5 +26,18 @@ public class BillDetailsController {
     @GetMapping("/get/{id}")
     public ResponseEntity<BillDetailDTO> getbilldetail(@PathVariable UUID id) {
         return billDetailService.get(id);
+    }
+
+    @GetMapping("/{billId}/student/{studentId}")
+    public ResponseEntity<BillDetailDTO> getBillDetailForStudent(
+            @PathVariable UUID billId,
+            @PathVariable UUID studentId) {
+        return billDetailService.getBillDetailForStudent(billId, studentId);
+    }
+
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<List<BillDetailDTO>> getAllBillDetailsByStudent(
+            @PathVariable UUID studentId) {
+        return billDetailService.getAllBillDetailsByStudent(studentId);
     }
 }

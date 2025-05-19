@@ -3,6 +3,7 @@ package com.example.TanKhoaLearningCenterBE.dto;
 import com.example.TanKhoaLearningCenterBE.entity.BillDetailEntity;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -14,6 +15,8 @@ public class BillDetailDTO {
     private Double amount;
     private String currency;
     private String paymentStatus;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     public BillDetailDTO(BillDetailEntity billDetail) {
         this.billId = billDetail.getBillId();
@@ -27,5 +30,7 @@ public class BillDetailDTO {
         this.amount = billDetail.getAmount();
         this.currency = billDetail.getCurrency();
         this.paymentStatus = billDetail.getPaymentStatus();
+        this.createdAt = billDetail.getCreatedAt();
+        this.updatedAt = billDetail.getUpdatedAt();
     }
 }

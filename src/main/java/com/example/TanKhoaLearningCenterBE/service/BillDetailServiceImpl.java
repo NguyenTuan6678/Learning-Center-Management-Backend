@@ -19,8 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,10 +52,18 @@ public class BillDetailServiceImpl implements BillDetailService {
         }
 
         StudentEntity student = studentRepository.findById(request.getStudentId()).orElseThrow(StudentNotFoundException::new);
-        ParentEntity parent = parentRepository.findById(request.getParentId()).orElseThrow(ParentNotFoundException::new);
+//        ParentEntity parent = parentRepository.findById(request.getParentId()).orElseThrow(ParentNotFoundException::new);
 
         billDetail.setStudent(student);
-        billDetail.setParent(parent);
+//        billDetail.setParent(parent);
+
+        if (request.getParentId() != null) {
+            ParentEntity parent = parentRepository.findById(request.getParentId())
+                    .orElseThrow(ParentNotFoundException::new);
+            billDetail.setParent(parent);
+        } else {
+            billDetail.setParent(null); // ✅ Cho phép bỏ parent nếu không có
+        }
 
         BillDetailEntity saved = billDetailRepository.save(billDetail);
 
@@ -67,6 +77,25 @@ public class BillDetailServiceImpl implements BillDetailService {
             return ResponseEntity.ok(new BillDetailDTO(optionalBillDetail.get()));
         }
         throw new RuntimeException("Bill not found");
+    }
+
+    @Override
+    public ResponseEntity<BillDetailDTO> getBillDetailForStudent(UUID billId, UUID studentId) {
+        BillDetailEntity billDetail = billDetailRepository.findById(billId).orElseThrow(() -> new RuntimeException("Billdetail not found for ID: " + billId));
+        if (!billDetail.getStudent().getStudentId().equals(studentId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+        return ResponseEntity.ok(new BillDetailDTO(billDetail));
+    }
+
+    @Override
+    public ResponseEntity<List<BillDetailDTO>> getAllBillDetailsByStudent(UUID studentId) {
+        List<BillDetailEntity> billDetails = billDetailRepository.findAllByStudent_StudentId(studentId);
+        return ResponseEntity.ok(
+                billDetails.stream()
+                        .map(BillDetailDTO::new)
+                        .collect(Collectors.toList())
+        );
     }
 
     private BillStatus mapPaymentStatusToBillStatus(String paymentStatus) {

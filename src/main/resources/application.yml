@@ -63,3 +63,12 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+
+vnpay:
+  return-url: https://yourdomain.com/api/payments/vnpay/callback
+  pay-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  tmn-code: IQC0KY3H
+  secret-key: W2WAAITEJZAXPK7LBTKEUXDXIUXF36LG
+  version: 2.1.0
+  command: pay
+  ordertype: other

@@ -53,7 +53,7 @@ public class StudentController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<FileUploadResponse> uploadStudentsFromExcel(@RequestParam("file")MultipartFile file) {
+    public ResponseEntity<FileUploadResponse> uploadStudentsFromExcel(@RequestParam("file") MultipartFile file) {
         return studentService.uploadStudentsFromExcel(file);
     }
 }

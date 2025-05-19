@@ -9,7 +9,6 @@ import java.util.UUID;
 @Data
 @Table(name = "class_student")
 public class ClassStudentEntity extends AuditEntity{
-
     @Id
     @GeneratedValue
     @Column(name = "classstudentid")  // Add an ID

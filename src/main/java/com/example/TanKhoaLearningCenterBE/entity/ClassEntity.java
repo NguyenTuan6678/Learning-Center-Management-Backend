@@ -34,4 +34,12 @@ public class ClassEntity extends AuditEntity {
 
     @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttendanceEntity> attendances;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dayId")
+    private DayEntity day;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "timeId")
+    private TimeEntity time;
 }

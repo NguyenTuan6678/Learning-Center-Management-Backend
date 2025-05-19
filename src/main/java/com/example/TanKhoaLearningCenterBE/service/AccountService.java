@@ -19,4 +19,6 @@ public interface AccountService {
     ResponseEntity<PageResponse<AccountDTO>> getAll(Integer page, Integer size);
 
     ResponseEntity<List<AccountDTO>> search(String input);
+
+    ResponseEntity<List<AccountDTO>> getAvailableAccounts();
 }

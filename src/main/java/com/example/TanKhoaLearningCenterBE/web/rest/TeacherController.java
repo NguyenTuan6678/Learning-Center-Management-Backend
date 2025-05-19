@@ -1,6 +1,7 @@
 package com.example.TanKhoaLearningCenterBE.web.rest;
 
 import com.example.TanKhoaLearningCenterBE.dto.TeacherDTO;
+import com.example.TanKhoaLearningCenterBE.dto.TimeDTO;
 import com.example.TanKhoaLearningCenterBE.service.TeacherService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateTeacherRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateTeacherRequest;
@@ -48,6 +49,11 @@ public class TeacherController {
 
     @PostMapping("/upload")
     public ResponseEntity<FileUploadResponse> uploadTeacherFromExcel(@RequestParam("file")MultipartFile file) {
-        return teacherService.uploadStudentsFromExcel(file);
+        return teacherService.uploadTeachersFromExcel(file);
+    }
+
+    @GetMapping("/listAll")
+    public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
+        return teacherService.getAllTeachers();
     }
 }

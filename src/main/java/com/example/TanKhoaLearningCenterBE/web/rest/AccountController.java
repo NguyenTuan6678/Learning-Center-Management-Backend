@@ -48,4 +48,9 @@ public class AccountController {
                                                            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return accountService.getAll(page, size);
     }
+
+    @GetMapping("available-student")
+    public ResponseEntity<List<AccountDTO>> getAvailableStudentAccounts() {
+        return accountService.getAvailableAccounts();
+    }
 }

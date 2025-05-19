@@ -25,9 +25,11 @@ public interface TeacherService {
 
     ResponseEntity<List<TeacherDTO>> search(String name);
 
-    ResponseEntity<FileUploadResponse> uploadStudentsFromExcel(MultipartFile file);
+    ResponseEntity<FileUploadResponse> uploadTeachersFromExcel(MultipartFile file);
 
     List<CreateTeacherRequest> processExcelFile(MultipartFile file) throws IOException;
 
     void saveTeachers(List<CreateTeacherRequest> teacherRequests);
+
+    ResponseEntity<List<TeacherDTO>> getAllTeachers();
 }

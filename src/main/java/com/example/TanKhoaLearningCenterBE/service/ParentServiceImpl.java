@@ -158,12 +158,25 @@ public class ParentServiceImpl implements ParentService {
         }
         try {
             List<CreateParentRequest> parents = processExcelFile(file);
+            if (parents.isEmpty()) { // Kiểm tra danh sách parents có rỗng không
+                response.setMessage("No valid parents found in the Excel file.");
+                response.setSuccessfulCount(0);
+                return ResponseEntity.badRequest().body(response);
+            }
             saveParents(parents);
-            response.setMessage("Parent uploaded successfully!");
+            response.setMessage("Parents uploaded successfully!");
             response.setSuccessfulCount(parents.size());
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             response.setMessage("Failed to upload parents: " + e.getMessage());
+            response.setSuccessfulCount(0);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        } catch (IllegalArgumentException e) { // Bắt lỗi dữ liệu không hợp lệ
+            response.setMessage("Invalid data in Excel file: " + e.getMessage());
+            response.setSuccessfulCount(0);
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) { // Bắt các lỗi không mong muốn khác
+            response.setMessage("An unexpected error occurred: " + e.getMessage());
             response.setSuccessfulCount(0);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -171,10 +184,11 @@ public class ParentServiceImpl implements ParentService {
 
     private String getStringCellValue(Cell cell) {
         if (cell == null) {
-            return null;
+            return ""; // Trả về "" thay vì null
         }
         cell.setCellType(CellType.STRING);
-        return cell.getStringCellValue().trim();
+        String value = cell.getStringCellValue().trim();
+        return value;
     }
 
     @Override
@@ -195,25 +209,52 @@ public class ParentServiceImpl implements ParentService {
                 Row row = rowIterator.next();
                 CreateParentRequest parentRequest = new CreateParentRequest();
 
-                Cell nameCell = row.getCell(0);
-                Cell phoneCell = row.getCell(1);
-                Cell emailCell = row.getCell(2);
+                String name = getStringCellValue(row.getCell(0));
+                String phone = getStringCellValue(row.getCell(1));
+                String email = getStringCellValue(row.getCell(2));
 
-                parentRequest.setName(getStringCellValue(nameCell));
-                parentRequest.setPhoneNumber(getStringCellValue(phoneCell));
-                parentRequest.setEmail(getStringCellValue(emailCell));
-
-                parents.add(parentRequest);
+                // Validate dữ liệu trước khi tạo đối tượng ParentRequest
+                if (isValidParentData(name, phone, email)) {
+                    parentRequest.setName(name);
+                    parentRequest.setPhoneNumber(phone);
+                    parentRequest.setEmail(email);
+                    parents.add(parentRequest);
+                } else {
+                    throw new IllegalArgumentException("Invalid data in row " + (row.getRowNum() + 1) +
+                            ": Name='" + name + "', Phone='" + phone + "', Email='" + email + "'");
+                }
             }
         }
         return parents;
     }
 
+    private boolean isRowEmpty(Row row) {
+        if (row == null) {
+            return true;
+        }
+        for (int i = row.getFirstCellNum(); i < row.getLastCellNum(); i++) {
+            Cell cell = row.getCell(i);
+            if (cell != null && cell.getCellType() != CellType.BLANK && getStringCellValue(cell).trim() != "") {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidParentData(String name, String phone, String email) {
+        // Thực hiện validate dữ liệu, trả về true nếu hợp lệ, false nếu không.
+        // Ví dụ:
+        if (name == null || name.isEmpty() || phone == null || phone.isEmpty() || email == null || email.isEmpty()) {
+            return false;
+        }
+        //Thêm các điều kiện ràng buộc khác nếu cần
+        return true;
+    }
+
     @Override
     @Transactional
     public void saveParents(List<CreateParentRequest> parentRequests) {
-        List<ParentEntity> parentEntities = parentRequests
-                .stream()
+        List<ParentEntity> parentEntities = parentRequests.stream()
                 .map(this::converToEntity)
                 .collect(Collectors.toList());
         parentRepository.saveAll(parentEntities);
@@ -224,7 +265,6 @@ public class ParentServiceImpl implements ParentService {
         parentEntity.setParentName(request.getName());
         parentEntity.setParPhoneNumber(request.getPhoneNumber());
         parentEntity.setParEmail(request.getEmail());
-
         return parentEntity;
     }
 }

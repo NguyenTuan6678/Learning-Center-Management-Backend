@@ -68,7 +68,7 @@ public class TeacherServiceImpl implements TeacherService {
                 Optional<AccountEntity> accountOptional = accountRepository.findById(request.getAccountId());
                 if (accountOptional.isPresent()) {
                     AccountEntity account = accountOptional.get();
-                    if (account.getRole() == Role.STUDENT) {
+                    if (account.getRole() == Role.TEACHER) {
                         if (isAccountAssigned(account.getAccountId())) {
                             throw new AccountAlreadyAssignedException();
                         }
@@ -136,7 +136,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public ResponseEntity<FileUploadResponse> uploadStudentsFromExcel(MultipartFile file) {
+    public ResponseEntity<FileUploadResponse> uploadTeachersFromExcel(MultipartFile file) {
         FileUploadResponse response = new FileUploadResponse();
         if (file.isEmpty()) {
             response.setMessage("Please Upload the file!");
@@ -145,12 +145,26 @@ public class TeacherServiceImpl implements TeacherService {
         }
         try {
             List<CreateTeacherRequest> teachers = processExcelFile(file);
+            // Kiểm tra xem có giáo viên nào được xử lý thành công không
+            if (teachers.isEmpty()) {
+                response.setMessage("No valid teachers found in the Excel file.");
+                response.setSuccessfulCount(0);
+                return ResponseEntity.badRequest().body(response);
+            }
             saveTeachers(teachers);
-            response.setMessage("Teacher uploaded successfully!");
+            response.setMessage("Teachers uploaded successfully!");
             response.setSuccessfulCount(teachers.size());
             return ResponseEntity.ok(response);
         } catch (IOException e) {
             response.setMessage("Failed to upload teachers: " + e.getMessage());
+            response.setSuccessfulCount(0);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        } catch (IllegalArgumentException e) { // Bắt lỗi do dữ liệu không hợp lệ
+            response.setMessage("Invalid data in Excel file: " + e.getMessage());
+            response.setSuccessfulCount(0);
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) { // Bắt các lỗi không mong muốn khác
+            response.setMessage("An unexpected error occurred: " + e.getMessage());
             response.setSuccessfulCount(0);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -158,10 +172,11 @@ public class TeacherServiceImpl implements TeacherService {
 
     private String getStringCellValue(Cell cell) {
         if (cell == null) {
-            return null;
+            return ""; // Trả về chuỗi rỗng thay vì null
         }
         cell.setCellType(CellType.STRING);
-        return cell.getStringCellValue().trim();
+        String value = cell.getStringCellValue().trim();
+        return value;
     }
 
     @Override
@@ -171,9 +186,9 @@ public class TeacherServiceImpl implements TeacherService {
              Workbook workbook = new XSSFWorkbook(inputStream)) {
 
             Sheet sheet = workbook.getSheetAt(0);
-
             Iterator<Row> rowIterator = sheet.iterator();
 
+            // Bỏ qua header row nếu có
             if (rowIterator.hasNext()) {
                 rowIterator.next();
             }
@@ -182,35 +197,70 @@ public class TeacherServiceImpl implements TeacherService {
                 Row row = rowIterator.next();
                 CreateTeacherRequest teacherRequest = new CreateTeacherRequest();
 
-                Cell nameCell = row.getCell(0);
-                Cell phoneCell = row.getCell(1);
-                Cell emailCell = row.getCell(2);
+                String name = getStringCellValue(row.getCell(0));
+                String phone = getStringCellValue(row.getCell(1));
+                String email = getStringCellValue(row.getCell(2));
 
-                teacherRequest.setName(getStringCellValue(nameCell));
-                teacherRequest.setPhoneNumber(getStringCellValue(phoneCell));
-                teacherRequest.setEmail(getStringCellValue(emailCell));
-
-                teachers.add(teacherRequest);
+                // Validate dữ liệu trước khi tạo đối tượng
+                if (isValidTeacherData(name, phone, email)) {
+                    teacherRequest.setName(name);
+                    teacherRequest.setPhoneNumber(phone);
+                    teacherRequest.setEmail(email);
+                    teachers.add(teacherRequest);
+                } else {
+                    // Ném ngoại lệ để xử lý ở hàm uploadTeachersFromExcel
+                    throw new IllegalArgumentException("Invalid data in row " + (row.getRowNum() + 1) +
+                            ": Name='" + name + "', Phone='" + phone + "', Email='" + email + "'");
+                }
             }
         }
         return teachers;
+    }
+
+    private boolean isRowEmpty(Row row) {
+        if (row == null) {
+            return true;
+        }
+        for (int i = row.getFirstCellNum(); i < row.getLastCellNum(); i++) {
+            Cell cell = row.getCell(i);
+            if (cell != null && cell.getCellType() != CellType.BLANK && getStringCellValue(cell).trim() != "") {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidTeacherData(String name, String phone, String email) {
+        // Thực hiện validate dữ liệu, trả về true nếu hợp lệ, false nếu không.
+        // Ví dụ:
+        if (name == null || name.isEmpty() || phone == null || phone.isEmpty() || email == null || email.isEmpty()) {
+            return false;
+        }
+        //Thêm các điều kiện ràng buộc khác nếu cần
+        return true;
     }
 
     @Override
     @Transactional
     public void saveTeachers(List<CreateTeacherRequest> teacherRequests) {
         List<TeacherEntity> teacherEntities = teacherRequests.stream()
-                .map(this::converToEntity)
+                .map(this::convertToEntity) // Đổi tên cho thống nhất
                 .collect(Collectors.toList());
         teacherRepository.saveAll(teacherEntities);
     }
 
-    private TeacherEntity converToEntity(CreateTeacherRequest request) {
+    private TeacherEntity convertToEntity(CreateTeacherRequest request) { // Đổi tên cho thống nhất
         TeacherEntity teacherEntity = new TeacherEntity();
         teacherEntity.setTeacherName(request.getName());
         teacherEntity.setTphoneNumber(request.getPhoneNumber());
         teacherEntity.setTEmail(request.getEmail());
-
         return teacherEntity;
+    }
+
+    @Override
+    public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
+        List<TeacherEntity> teachers = teacherRepository.findAll();
+        List<TeacherDTO> teacherDTOS = teachers.stream().map(TeacherDTO::new).collect(Collectors.toList());
+        return ResponseEntity.ok(teacherDTOS);
     }
 }

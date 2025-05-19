@@ -3,6 +3,7 @@ package com.example.TanKhoaLearningCenterBE.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,4 +20,7 @@ public class CourseEntity extends AuditEntity {
 
     @Column(name = "description")
     private String description;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClassEntity> classes;
 }

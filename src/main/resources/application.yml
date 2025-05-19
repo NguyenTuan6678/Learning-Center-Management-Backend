@@ -65,7 +65,7 @@ application:
         expiration: 604800000 # 7 days
 
 vnpay:
-  return-url: https://yourdomain.com/api/payments/vnpay/callback
+  return-url: http://localhost:8080/api/payments/vnpay/callback
   pay-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
   tmn-code: IQC0KY3H
   secret-key: W2WAAITEJZAXPK7LBTKEUXDXIUXF36LG

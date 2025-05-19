@@ -5,10 +5,9 @@ import com.example.TanKhoaLearningCenterBE.service.TimeService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateTimeRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +16,12 @@ public class TimeController {
     private final TimeService timeService;
 
     @PostMapping("/create")
-    public ResponseEntity<TimeDTO> createTime(@RequestParam CreateTimeRequest request) {
+    public ResponseEntity<TimeDTO> createTime(@RequestBody CreateTimeRequest request) {
         return timeService.createTime(request);
+    }
+
+    @GetMapping("/listAll")
+    public ResponseEntity<List<TimeDTO>> getAllTimes() {
+        return timeService.getAllTimes();
     }
 }

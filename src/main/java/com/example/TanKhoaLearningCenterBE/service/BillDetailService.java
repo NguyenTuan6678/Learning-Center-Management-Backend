@@ -15,5 +15,4 @@ public interface BillDetailService {
     ResponseEntity<BillDetailDTO> getBillDetailForStudent(UUID billId, UUID studentId);
 
     ResponseEntity<List<BillDetailDTO>> getAllBillDetailsByStudent(UUID studentId);
-
 }

@@ -5,6 +5,7 @@ import com.example.TanKhoaLearningCenterBE.entity.AccountEntity;
 import com.example.TanKhoaLearningCenterBE.exception.AccountNotFoundException;
 import com.example.TanKhoaLearningCenterBE.exception.UserNameAlreadyExistException;
 import com.example.TanKhoaLearningCenterBE.repository.AccountRepository;
+import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateAccountRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateAccountRequest;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,6 +32,7 @@ import java.util.UUID;
 public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder encoder;
     private final AccountRepository accountRepository;
+    private final StudentRepository studentRepository;
 
     @Override
     public ResponseEntity<AccountDTO> create(CreateAccountRequest request) {
@@ -119,5 +122,28 @@ public class AccountServiceImpl implements AccountService {
 //            return null;
         }
         throw new AccountNotFoundException();
+    }
+
+    @Override
+    public ResponseEntity<List<AccountDTO>> getAvailableAccounts() {
+        log.info("***Getting available accounts");
+        // 1. Fetch all accounts with the 'STUDENT' role
+        List<AccountEntity> allStudentAccounts = accountRepository.findByRole(Role.STUDENT);
+
+        // 2. Fetch all account IDs that are currently linked to students
+        List<UUID> linkedAccountIds = studentRepository.findAll().stream()
+                .map(student -> student.getAccountIds() != null ? student.getAccountIds().getAccountId() : null)
+                .filter(accountId -> accountId != null) // Filter out null accountIds
+                .collect(Collectors.toList());
+
+        // 3. Filter the student accounts to find those not in the linkedAccountIds
+        List<AccountDTO> availableAccounts = allStudentAccounts.stream()
+                .filter(account -> !linkedAccountIds.contains(account.getAccountId()))
+                .map(AccountDTO::new)
+                .collect(Collectors.toList());
+
+        log.info("***Available Accounts: {}", availableAccounts);
+        // 4. Return the list of available accounts
+        return new ResponseEntity<>(availableAccounts, HttpStatus.OK);
     }
 }

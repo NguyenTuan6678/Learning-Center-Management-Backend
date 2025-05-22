@@ -1,12 +1,10 @@
 package com.example.TanKhoaLearningCenterBE.web.rest;
 
 import com.example.TanKhoaLearningCenterBE.dto.StudentDTO;
-import com.example.TanKhoaLearningCenterBE.entity.AccountEntity;
-import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
-import com.example.TanKhoaLearningCenterBE.exception.StudentNotFoundException;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.service.StudentService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateStudentRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.request.RegisterClassRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateStudentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
@@ -15,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -55,5 +51,10 @@ public class StudentController {
     @PostMapping("/upload")
     public ResponseEntity<FileUploadResponse> uploadStudentsFromExcel(@RequestParam("file") MultipartFile file) {
         return studentService.uploadStudentsFromExcel(file);
+    }
+
+    @PostMapping("/register-class")
+    public ResponseEntity<?> registerClass(@RequestBody RegisterClassRequest request) {
+        return studentService.registerClass(request);
     }
 }

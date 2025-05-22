@@ -2,6 +2,7 @@ package com.example.TanKhoaLearningCenterBE.service;
 
 import com.example.TanKhoaLearningCenterBE.dto.StudentDTO;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateStudentRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.request.RegisterClassRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateStudentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
@@ -30,4 +31,6 @@ public interface StudentService {
     List<CreateStudentRequest> processExcelFile(MultipartFile file) throws IOException;
 
     void saveStudents(List<CreateStudentRequest> studentRequests);
+
+    ResponseEntity<?> registerClass(RegisterClassRequest request);
 }

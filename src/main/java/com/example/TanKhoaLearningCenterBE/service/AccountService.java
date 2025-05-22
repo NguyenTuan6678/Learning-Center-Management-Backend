@@ -21,4 +21,6 @@ public interface AccountService {
     ResponseEntity<List<AccountDTO>> search(String input);
 
     ResponseEntity<List<AccountDTO>> getAvailableAccounts();
+
+    ResponseEntity<List<AccountDTO>> getAvailableAccount2s();
 }

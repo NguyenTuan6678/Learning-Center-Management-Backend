@@ -1,18 +1,15 @@
 package com.example.TanKhoaLearningCenterBE.service;
 
 import com.example.TanKhoaLearningCenterBE.dto.StudentDTO;
-import com.example.TanKhoaLearningCenterBE.entity.AccountEntity;
-import com.example.TanKhoaLearningCenterBE.entity.BillDetailEntity;
-import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
+import com.example.TanKhoaLearningCenterBE.entity.*;
 import com.example.TanKhoaLearningCenterBE.exception.AccountAlreadyAssignedException;
 import com.example.TanKhoaLearningCenterBE.exception.AccountNotFoundException;
 import com.example.TanKhoaLearningCenterBE.exception.InvalidAccountRoleException;
 import com.example.TanKhoaLearningCenterBE.exception.StudentNotFoundException;
-import com.example.TanKhoaLearningCenterBE.repository.AccountRepository;
-import com.example.TanKhoaLearningCenterBE.repository.BillDetailRepository;
-import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
+import com.example.TanKhoaLearningCenterBE.repository.*;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateStudentRequest;
+import com.example.TanKhoaLearningCenterBE.web.rest.request.RegisterClassRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateStudentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
@@ -39,6 +36,8 @@ public class StudentServiceImpl implements StudentService{
     private final StudentRepository studentRepository;
     private final BillDetailRepository billDetailRepository;
     private final AccountRepository accountRepository;
+    private final ClassRepository classRepository;
+    private final ClassStudentRepository classStudentRepository;
 
     @Override
     public ResponseEntity<StudentDTO> create(CreateStudentRequest request) {
@@ -222,5 +221,33 @@ public class StudentServiceImpl implements StudentService{
         studentEntity.setStdEmail(request.getEmail());
 
         return studentEntity;
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> registerClass(RegisterClassRequest request) {
+        // 1. Tìm StudentEntity
+        StudentEntity student = studentRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new StudentNotFoundException());
+
+        // 2. Tìm ClassEntity
+        ClassEntity clazz = classRepository.findById(request.getClassId())
+                .orElseThrow(() -> new RuntimeException("Class not found"));
+
+        // 3. Kiểm tra xem học sinh đã đăng ký lớp này chưa
+        boolean alreadyRegistered = classStudentRepository.existsByStudentAndClazz(student, clazz);
+        if (alreadyRegistered) {
+            throw new RuntimeException("Student is already registered for this class.");
+        }
+
+        // 4. Tạo ClassStudentEntity mới
+        ClassStudentEntity classStudent = new ClassStudentEntity();
+        classStudent.setStudent(student);
+        classStudent.setClazz(clazz);
+
+        // 5. Lưu ClassStudentEntity vào database
+        classStudentRepository.save(classStudent);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Student registered for class successfully.");
     }
 }

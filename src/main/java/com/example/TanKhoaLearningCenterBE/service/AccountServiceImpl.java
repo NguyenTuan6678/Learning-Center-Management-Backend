@@ -6,6 +6,7 @@ import com.example.TanKhoaLearningCenterBE.exception.AccountNotFoundException;
 import com.example.TanKhoaLearningCenterBE.exception.UserNameAlreadyExistException;
 import com.example.TanKhoaLearningCenterBE.repository.AccountRepository;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
+import com.example.TanKhoaLearningCenterBE.repository.TeacherRepository;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateAccountRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateAccountRequest;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder encoder;
+    private final TeacherRepository teacherRepository;
     private final AccountRepository accountRepository;
     private final StudentRepository studentRepository;
 
@@ -127,23 +129,44 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public ResponseEntity<List<AccountDTO>> getAvailableAccounts() {
         log.info("***Getting available accounts");
-        // 1. Fetch all accounts with the 'STUDENT' role
         List<AccountEntity> allStudentAccounts = accountRepository.findByRole(Role.STUDENT);
 
-        // 2. Fetch all account IDs that are currently linked to students
+
         List<UUID> linkedAccountIds = studentRepository.findAll().stream()
                 .map(student -> student.getAccountIds() != null ? student.getAccountIds().getAccountId() : null)
                 .filter(accountId -> accountId != null) // Filter out null accountIds
                 .collect(Collectors.toList());
 
-        // 3. Filter the student accounts to find those not in the linkedAccountIds
+
         List<AccountDTO> availableAccounts = allStudentAccounts.stream()
                 .filter(account -> !linkedAccountIds.contains(account.getAccountId()))
                 .map(AccountDTO::new)
                 .collect(Collectors.toList());
 
         log.info("***Available Accounts: {}", availableAccounts);
-        // 4. Return the list of available accounts
+
+        return new ResponseEntity<>(availableAccounts, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<AccountDTO>> getAvailableAccount2s() {
+        log.info("***Getting available accounts");
+        List<AccountEntity> allTeacherAccounts = accountRepository.findByRole(Role.TEACHER);
+
+
+        List<UUID> linkedAccountIds = teacherRepository.findAll().stream()
+                .map(teacher -> teacher.getAccountIds() != null ? teacher.getAccountIds().getAccountId() : null)
+                .filter(accountId -> accountId != null) // Filter out null accountIds
+                .collect(Collectors.toList());
+
+
+        List<AccountDTO> availableAccounts = allTeacherAccounts.stream()
+                .filter(account -> !linkedAccountIds.contains(account.getAccountId()))
+                .map(AccountDTO::new)
+                .collect(Collectors.toList());
+
+        log.info("***Available Accounts: {}", availableAccounts);
+
         return new ResponseEntity<>(availableAccounts, HttpStatus.OK);
     }
 }

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Data
 public class UpdateTeacherRequest {
-    private String name;
+    private String teacherName;
     private String phoneNumber;
     private String email;
     private UUID accountId;

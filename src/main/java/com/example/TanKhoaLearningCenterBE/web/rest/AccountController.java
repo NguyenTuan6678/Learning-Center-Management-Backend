@@ -53,4 +53,9 @@ public class AccountController {
     public ResponseEntity<List<AccountDTO>> getAvailableStudentAccounts() {
         return accountService.getAvailableAccounts();
     }
+
+    @GetMapping("available-teacher")
+    public ResponseEntity<List<AccountDTO>> getAvailableTeacherAccounts() {
+        return accountService.getAvailableAccount2s();
+    }
 }

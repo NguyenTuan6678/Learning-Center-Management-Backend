@@ -8,12 +8,12 @@ import java.util.UUID;
 
 @Data
 public class TimeDTO {
-    private UUID id;
+    private UUID timeId;
     private LocalTime timeStart;
     private LocalTime timeEnd;
 
     public TimeDTO(TimeEntity time) {
-        this.id = time.getTimeId();
+        this.timeId = time.getTimeId();
         this.timeStart = time.getTimeStart();
         this.timeEnd = time.getTimeEnd();
     }

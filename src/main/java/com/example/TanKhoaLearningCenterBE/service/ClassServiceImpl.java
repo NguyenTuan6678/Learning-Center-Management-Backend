@@ -42,6 +42,22 @@ public class ClassServiceImpl implements ClassService {
                 .orElseThrow(() -> new RuntimeException("Cant not found teacher ID: " + request.getTeacherId()));
         clazz.setTeacher(teacher);
 
+        if (request.getDayId() != null) {
+            DayEntity day = dayRepository.findById(request.getDayId())
+                    .orElseThrow(() -> new RuntimeException("Day not found with ID: " + request.getDayId()));
+            clazz.setDay(day);
+        } else {
+            clazz.setDay(null); // Đặt rõ ràng là null nếu request.getDayId() là null
+        }
+
+        if (request.getTimeId() != null) {
+            TimeEntity time = timeRepository.findById(request.getTimeId())
+                    .orElseThrow(() -> new RuntimeException("Time not found with ID: " + request.getTimeId()));
+            clazz.setTime(time);
+        } else {
+            clazz.setTime(null); // Đặt rõ ràng là null nếu request.getTimeId() là null
+        }
+
         ClassEntity savedClass = classRepository.save(clazz);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ClassDTO(savedClass));
     }
@@ -115,7 +131,7 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ResponseEntity<PageResponse<ClassDTO>> getAllClasses(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ClassEntity> classPage = classRepository.findAll(pageable);
+        Page<ClassEntity> classPage = classRepository.findAllWithDetails(pageable);
         List<ClassDTO> rows = classPage.getContent().stream().map(ClassDTO::new).collect(Collectors.toList());
 
         PageResponse<ClassDTO> response = new PageResponse<>();

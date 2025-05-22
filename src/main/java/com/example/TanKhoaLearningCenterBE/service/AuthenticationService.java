@@ -2,6 +2,7 @@ package com.example.TanKhoaLearningCenterBE.service;
 
 import com.example.TanKhoaLearningCenterBE.entity.AccountEntity;
 import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
+import com.example.TanKhoaLearningCenterBE.entity.TeacherEntity;
 import com.example.TanKhoaLearningCenterBE.repository.AccountRepository;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.repository.TeacherRepository;
@@ -58,12 +59,20 @@ public class AuthenticationService {
                     .orElse(null);
         }
 
+        UUID teacherId = null;
+        if (user.getRole() == Role.TEACHER) {
+            teacherId = teacherRepository.findByAccountIds_AccountId(user.getAccountId())
+                    .map(TeacherEntity::getTeacherId)
+                    .orElse(null);
+        }
+
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .role(user.getRole().name())
                 .userId(user.getAccountId())
                 .studentId(studentId)
+                .teacherId(teacherId)
                 .build();
     }
 }

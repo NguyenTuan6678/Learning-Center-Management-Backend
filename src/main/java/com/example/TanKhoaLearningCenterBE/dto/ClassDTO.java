@@ -1,10 +1,13 @@
 package com.example.TanKhoaLearningCenterBE.dto;
 
 import com.example.TanKhoaLearningCenterBE.entity.ClassEntity;
+import com.example.TanKhoaLearningCenterBE.entity.ClassStudentEntity;
 import lombok.Data;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 public class ClassDTO {
@@ -20,6 +23,7 @@ public class ClassDTO {
     private UUID timeId;
     private LocalTime timeStart;
     private LocalTime timeEnd;
+    private List<StudentDTO> students;
 
 
     public ClassDTO(ClassEntity classes) {
@@ -42,6 +46,13 @@ public class ClassDTO {
             this.timeId = classes.getTime().getTimeId();
             this.timeStart = classes.getTime().getTimeStart();
             this.timeEnd = classes.getTime().getTimeEnd();
+        }
+
+        if (classes.getClassStudents() != null) {
+            this.students = classes.getClassStudents().stream()
+                    .map(ClassStudentEntity::getStudent)
+                    .map(StudentDTO::new)
+                    .collect(Collectors.toList());
         }
     }
 }

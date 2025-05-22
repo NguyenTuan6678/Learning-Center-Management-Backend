@@ -85,4 +85,11 @@ public class CourseServiceImpl implements CourseService {
 
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public ResponseEntity<List<CourseDTO>> getCourseById() {
+        List<CourseEntity> courses =  courseRepository.findAll();
+        List<CourseDTO> courseDTOS = courses.stream().map(CourseDTO::new).collect(Collectors.toList());
+        return ResponseEntity.ok(courseDTOS);
+    }
 }

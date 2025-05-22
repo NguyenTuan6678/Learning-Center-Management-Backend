@@ -7,14 +7,14 @@ import java.util.UUID;
 
 @Data
 public class CourseDTO {
-    private UUID id;
-    private String name;
+    private UUID courseId;
+    private String courseName;
     private String description;
     private Integer numberOfClasses;
 
     public CourseDTO(CourseEntity courseEntity) {
-        this.id = courseEntity.getCourseId();
-        this.name = courseEntity.getCourseName();
+        this.courseId = courseEntity.getCourseId();
+        this.courseName = courseEntity.getCourseName();
         this.description = courseEntity.getDescription();
         if (courseEntity.getClasses() != null) {
             this.numberOfClasses = courseEntity.getClasses().size();

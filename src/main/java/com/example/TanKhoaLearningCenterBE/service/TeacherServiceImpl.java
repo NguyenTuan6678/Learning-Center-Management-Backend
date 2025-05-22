@@ -52,8 +52,8 @@ public class TeacherServiceImpl implements TeacherService {
         Optional<TeacherEntity> teacherOptional = teacherRepository.findById(id);
         if (teacherOptional.isPresent()) {
             TeacherEntity teac = teacherOptional.get();
-            if (!request.getName().isBlank()) {
-                teac.setTeacherName(request.getName());
+            if (!request.getTeacherName().isBlank()) {
+                teac.setTeacherName(request.getTeacherName());
             }
 
             if (!request.getPhoneNumber().isBlank()) {

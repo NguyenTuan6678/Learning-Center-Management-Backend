@@ -8,15 +8,15 @@ import java.util.UUID;
 
 @Data
 public class TeacherDTO {
-    private UUID id;
-    private String name;
+    private UUID teacherId;
+    private String teacherName;
     private String phoneNumber;
     private String email;
     private AccountEntity accountId;
 
     public TeacherDTO(TeacherEntity teacher){
-        this.id = teacher.getTeacherId();
-        this.name = teacher.getTeacherName();
+        this.teacherId = teacher.getTeacherId();
+        this.teacherName = teacher.getTeacherName();
         this.phoneNumber = teacher.getTphoneNumber();
         this.email = teacher.getTEmail();
         this.accountId = teacher.getAccountIds();

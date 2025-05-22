@@ -19,4 +19,6 @@ public interface CourseService {
     ResponseEntity<List<CourseDTO>> searchCourse(String name);
 
     ResponseEntity<PageResponse<CourseDTO>> getAllCourse(Integer page, Integer size);
+
+    ResponseEntity<List<CourseDTO>> getCourseById();
 }

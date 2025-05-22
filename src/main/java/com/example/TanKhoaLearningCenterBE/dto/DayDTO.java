@@ -7,11 +7,11 @@ import java.util.UUID;
 
 @Data
 public class DayDTO {
-    private UUID id;
-    private String name;
+    private UUID dayId;
+    private String day;
 
     public DayDTO(DayEntity day) {
-        this.id = day.getDayId();
-        this.name = day.getDay();
+        this.dayId = day.getDayId();
+        this.day = day.getDay();
     }
 }

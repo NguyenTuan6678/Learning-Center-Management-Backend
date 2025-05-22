@@ -10,4 +10,6 @@ public class CreateClassRequest {
     private String description;
     private UUID courseId;
     private UUID teacherId;
+    private UUID timeId;
+    private UUID dayId;
 }

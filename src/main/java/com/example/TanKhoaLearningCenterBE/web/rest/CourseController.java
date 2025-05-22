@@ -19,7 +19,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @PostMapping("/create")
-    public ResponseEntity<CourseDTO> createACoure(@RequestBody CreateCourseRequest request) {
+    public ResponseEntity<CourseDTO> createACourse(@RequestBody CreateCourseRequest request) {
         return courseService.createCourse(request);
     }
 
@@ -38,8 +38,13 @@ public class CourseController {
         return courseService.searchCourse(name);
     }
 
-    @GetMapping("/listAll")
+    @GetMapping("/courseList")
     public ResponseEntity<PageResponse<CourseDTO>> getAllCourseI(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return courseService.getAllCourse(page, size);
+    }
+
+    @GetMapping("/listAll")
+    public ResponseEntity<List<CourseDTO>> getAllCourseBy() {
+        return courseService.getCourseById();
     }
 }

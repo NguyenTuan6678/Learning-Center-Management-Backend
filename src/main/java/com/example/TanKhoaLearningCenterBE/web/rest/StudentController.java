@@ -4,7 +4,6 @@ import com.example.TanKhoaLearningCenterBE.dto.StudentDTO;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.service.StudentService;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateStudentRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.RegisterClassRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateStudentRequest;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
 import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
@@ -51,10 +50,5 @@ public class StudentController {
     @PostMapping("/upload")
     public ResponseEntity<FileUploadResponse> uploadStudentsFromExcel(@RequestParam("file") MultipartFile file) {
         return studentService.uploadStudentsFromExcel(file);
-    }
-
-    @PostMapping("/register-class")
-    public ResponseEntity<?> registerClass(@RequestBody RegisterClassRequest request) {
-        return studentService.registerClass(request);
     }
 }

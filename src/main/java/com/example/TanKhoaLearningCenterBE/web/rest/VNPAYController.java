@@ -47,7 +47,6 @@ public class VNPAYController {
     @GetMapping("/status/{paymentId}")
     public ResponseEntity<PaymentDTO.PaymentResponse> checkPaymentStatus(
             @PathVariable UUID paymentId) {
-
         log.info("Checking payment status for: {}", paymentId);
         return ResponseEntity.ok(vnPayService.getPaymentStatus(paymentId));
     }

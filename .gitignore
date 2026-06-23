@@ -34,5 +34,6 @@ build/
 .vscode/
 
 ### Spring Boot Local Configuration ###
-src/main/resources/application-local.yml
+application-local.yml
+
 

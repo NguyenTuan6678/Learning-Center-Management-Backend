@@ -3,7 +3,7 @@ package com.example.TanKhoaLearningCenterBE.service;
 import com.example.TanKhoaLearningCenterBE.dto.DayDTO;
 import com.example.TanKhoaLearningCenterBE.entity.DayEntity;
 import com.example.TanKhoaLearningCenterBE.repository.DayRepository;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateDayRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateDayRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

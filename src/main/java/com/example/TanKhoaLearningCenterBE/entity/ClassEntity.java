@@ -1,45 +1,53 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+
 import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Document(collection = "classes")
 @Data
-@Table(name = "classes")
+@lombok.EqualsAndHashCode(callSuper = true)
 public class ClassEntity extends AuditEntity {
     @Id
-    @GeneratedValue
-    @Column(name = "classId")
-    private UUID classId;
+    private UUID classId = UUID.randomUUID();
 
-    @Column(name = "className", nullable = false, unique = true)
+    
     private String className;
 
-    @Column(name = "description")
+    
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courseId", nullable = false)
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private CourseEntity course;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacherId", nullable = false)
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private TeacherEntity teacher;
 
-    @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL, orphanRemoval = true)
+    @DBRef(lazy = true)
+    @lombok.ToString.Exclude
     private List<ClassStudentEntity> classStudents;
 
-    @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL, orphanRemoval = true)
+    @DBRef(lazy = true)
+    @lombok.ToString.Exclude
     private List<AttendanceEntity> attendances;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dayId")
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private DayEntity day;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "timeId")
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private TimeEntity time;
 }

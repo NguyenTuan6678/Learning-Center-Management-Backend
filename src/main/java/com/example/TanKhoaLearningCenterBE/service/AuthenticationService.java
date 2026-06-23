@@ -1,5 +1,7 @@
 package com.example.TanKhoaLearningCenterBE.service;
 
+import com.example.TanKhoaLearningCenterBE.security.JwtService;
+
 import com.example.TanKhoaLearningCenterBE.entity.AccountEntity;
 import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
 import com.example.TanKhoaLearningCenterBE.entity.TeacherEntity;
@@ -7,9 +9,9 @@ import com.example.TanKhoaLearningCenterBE.repository.AccountRepository;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.repository.TeacherRepository;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.AuthenticationRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.RegisterRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.AuthenticationResponse;
+import com.example.TanKhoaLearningCenterBE.controller.request.AuthenticationRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.RegisterRequest;
+import com.example.TanKhoaLearningCenterBE.controller.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

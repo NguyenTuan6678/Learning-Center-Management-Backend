@@ -1,54 +1,55 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+
 import lombok.Data;
 
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
+@Document(collection = "grades")
 @Data
-@Table(name = "grades")
 public class GradeEntity extends AuditEntity{
     @Id
-    @GeneratedValue
-    @Column(name = "gradeid")
-    private UUID gradeId;
+    private UUID gradeId = UUID.randomUUID();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "studentId", nullable = false)
+    @DBRef(lazy = true)
+    
     private StudentEntity student;
 
-    @Column(name = "studentName", nullable = false)
+    
     private String studentName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courseId", nullable = false)
+    @DBRef(lazy = true)
+    
     private CourseEntity course;
 
-    @Column(name = "courseName", nullable = false)
+    
     private String courseName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacherId", nullable = false)
+    @DBRef(lazy = true)
+    
     private TeacherEntity teacher;
 
-    @Column(name = "teacherName", nullable = false)
+    
     private String teacherName; // Lưu tên giáo viên chấm điểm
 
-    @Column(name = "attendanceScore")
+    
     private Float attendanceScore;
 
-    @Column(name = "attitudeScore")
+    
     private Float attitudeScore;
 
-    @Column(name = "midtermScore")
+    
     private Float midtermScore;
 
-    @Column(name = "finalScore")
+    
     private Float finalScore;
 
-    @Column(name = "notes")
+    
     private String notes;
 
     @Override

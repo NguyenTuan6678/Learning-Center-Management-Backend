@@ -1,27 +1,31 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+
 import lombok.Data;
 
 import java.util.UUID;
 
-@Entity
+@Document(collection = "reviews")
 @Data
-@Table(name = "reviews")
+@lombok.EqualsAndHashCode(callSuper = true)
 public class ReviewEntity extends AuditEntity {
     @Id
-    @GeneratedValue
-    @Column(name = "reviewId")
-    private UUID reviewId;
+    private UUID reviewId = UUID.randomUUID();
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "teacherId")
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private TeacherEntity teacherIds;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "studentId")
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private StudentEntity studentIds;
 
-    @Column(name = "description")
+    
     private String description;
 }

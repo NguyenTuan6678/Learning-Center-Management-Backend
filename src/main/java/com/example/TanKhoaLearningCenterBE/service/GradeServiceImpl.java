@@ -8,10 +8,11 @@ import com.example.TanKhoaLearningCenterBE.entity.TeacherEntity;
 import com.example.TanKhoaLearningCenterBE.repository.CourseRepository;
 import com.example.TanKhoaLearningCenterBE.repository.GradeRepository;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
+import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
 import com.example.TanKhoaLearningCenterBE.repository.TeacherRepository;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateGradeRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateGradeRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateGradeRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateGradeRequest;
+import com.example.TanKhoaLearningCenterBE.controller.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -95,7 +96,8 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public ResponseEntity<List<GradeDTO>> searchGrade(String name) {
-        List<GradeEntity> results = gradeRepository.findByStudent_StdNameContainingIgnoreCase(name);
+        List<StudentEntity> students = studentRepository.findByStdNameContainingIgnoreCase(name);
+        List<GradeEntity> results = gradeRepository.findByStudentIn(students);
         List<GradeDTO> dtoList = results.stream().map(GradeDTO::new).toList();
         return ResponseEntity.ok(dtoList);
     }

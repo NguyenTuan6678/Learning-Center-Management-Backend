@@ -1,6 +1,7 @@
 package com.example.TanKhoaLearningCenterBE.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @ControllerAdvice
@@ -17,5 +18,13 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ErrorResponse handleAccountNotFoundExecption(UserNameAlreadyExistException exception){
         return new ErrorResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException exception) {
+        ResponseStatus responseStatus = exception.getClass().getAnnotation(ResponseStatus.class);
+        HttpStatus status = (responseStatus != null) ? responseStatus.value() : HttpStatus.INTERNAL_SERVER_ERROR;
+        return ResponseEntity.status(status).body(new ErrorResponse(exception.getMessage()));
     }
 }

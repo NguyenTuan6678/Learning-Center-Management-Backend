@@ -1,41 +1,53 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+
 import lombok.Data;
 
 import java.util.UUID;
 
-@Entity
+@Document(collection = "billdetails")
 @Data
-@Table(name = "billdetails")
+@lombok.EqualsAndHashCode(callSuper = true)
 public class BillDetailEntity extends AuditEntity{
     @Id
-    @GeneratedValue
-    @Column(name = "bill_Id")
     private UUID billId;
 
-    @OneToOne
-    @JoinColumn(name = "bill_id")
-    @MapsId
+    @DBRef(lazy = true)
+    
+    
+    @lombok.ToString.Exclude
     private BillEntity bill;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private StudentEntity student;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private ParentEntity parent;
 
-    @Column(name = "description", nullable = false)
+    
     private String description;
 
-    @Column(name = "amount", nullable = false)
+    
     private Double amount;
 
-    @Column(name = "currency", nullable = false, length = 3)
+    
     private String currency;
 
-    @Column(name = "payment_status", nullable = false)
+    
     private String paymentStatus;
+
+    public void setBill(BillEntity bill) {
+        this.bill = bill;
+        if (bill != null) {
+            this.billId = bill.getBillId();
+        }
+    }
 }

@@ -1,24 +1,28 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+
 import lombok.Data;
 
 import java.util.UUID;
 
-@Entity
+@Document(collection = "class_student")
 @Data
-@Table(name = "class_student")
+@lombok.EqualsAndHashCode(callSuper = true)
 public class ClassStudentEntity extends AuditEntity{
     @Id
-    @GeneratedValue
-    @Column(name = "classstudentid")  // Add an ID
-    private UUID classStudentId;
+    private UUID classStudentId = UUID.randomUUID();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "classId", nullable = false)
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private ClassEntity clazz;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "studentId", nullable = false)
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private StudentEntity student;
 }

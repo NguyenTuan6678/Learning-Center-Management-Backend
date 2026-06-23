@@ -1,30 +1,34 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import com.example.TanKhoaLearningCenterBE.utils.bill.BillStatus;
-import jakarta.persistence.*;
+
 import lombok.Data;
 
 import java.util.UUID;
 
-@Entity
+@Document(collection = "bills")
 @Data
-@Table(name = "bills")
+@lombok.EqualsAndHashCode(callSuper = true)
 public class BillEntity extends AuditEntity {
     @Id
-    @GeneratedValue
-    @Column(name = "billId")
-    private UUID billId;
+    private UUID billId = UUID.randomUUID();
 
-    @Column(name = "billDetail", nullable = false, unique = true)
+    
     private String billContent;
 
-    @Column(name = "billStatus", nullable = false)
-    @Enumerated(EnumType.STRING)
+    
+    
     private BillStatus billStatus;
 
-    @OneToOne(mappedBy = "bill", cascade = CascadeType.ALL)
+    @DBRef(lazy = true)
+    @lombok.ToString.Exclude
     private BillDetailEntity billDetailEntity;
 
-    @OneToOne(mappedBy = "bill", cascade = CascadeType.ALL)
+    @DBRef(lazy = true)
+    @lombok.ToString.Exclude
     private PaymentEntity payment;
 }

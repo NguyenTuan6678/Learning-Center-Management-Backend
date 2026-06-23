@@ -1,7 +1,11 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
-import jakarta.persistence.*;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,28 +17,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.UUID;
 
-@Entity
-@Table(name = "accounts")
+@Document(collection = "accounts")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@lombok.EqualsAndHashCode(callSuper = true)
 public class AccountEntity extends AuditEntity implements UserDetails {
     @Id
-    @GeneratedValue
-    @Column(name = "accountId")
-    private UUID accountId;
+    @Builder.Default
+    private UUID accountId = UUID.randomUUID();
 
     @NotNull(message = "Username is required")
-    @Column(name = "username")
+    
     private String userName;
 
     @NotNull(message = "Password is required")
-    @Column(name = "password")
+    
     private String passWord;
 
     @NotNull(message = "Role is required")
-    @Enumerated(EnumType.STRING)
+    
     private Role role;
 
     @Override

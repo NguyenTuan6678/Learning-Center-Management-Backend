@@ -1,9 +1,9 @@
 package com.example.TanKhoaLearningCenterBE.service;
 
 import com.example.TanKhoaLearningCenterBE.dto.CourseDTO;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateCourseRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateCourseRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateCourseRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateCourseRequest;
+import com.example.TanKhoaLearningCenterBE.controller.response.PageResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

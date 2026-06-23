@@ -12,7 +12,7 @@ import com.example.TanKhoaLearningCenterBE.repository.BillRepository;
 import com.example.TanKhoaLearningCenterBE.repository.ParentRepository;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
 import com.example.TanKhoaLearningCenterBE.utils.bill.BillStatus;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateBillDetailsRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateBillDetailsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

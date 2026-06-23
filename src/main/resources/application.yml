@@ -6,20 +6,9 @@ spring:
     name: TanKhoaLearningCenterBE
   main:
     allow-bean-definition-overriding: true
-  datasource:
-    url: ${POSTGRESQL_URI:jdbc:postgresql://localhost:6678/TanKhoaLCDB}
-    username: ${POSTGRESQL_USER:postgres}
-    password: ${POSTGRESQL_PASSWORD:edward123}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    database: postgresql
-    hibernate:
-      ddl-auto: update
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb+srv://mongotut:mongo123@cluster0.pt6sdhn.mongodb.net/LearningCenter?appName=Cluster0}
 
 logging:
   level:
@@ -64,7 +53,7 @@ management:
 application:
   security:
     jwt:
-      secret-key: 6e5f9db3f11f7585ceaeb35550270e36ffd731f3961600dc349a92415cfdfdc7
+      secret-key: ${JWT_SECRET_KEY:6e5f9db3f11f7585ceaeb35550270e36ffd731f3961600dc349a92415cfdfdc7}
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
@@ -72,8 +61,8 @@ application:
 vnpay:
   return-url: http://localhost:8080/api/payments/vnpay/callback
   pay-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-  tmn-code: IQC0KY3H
-  secret-key: W2WAAITEJZAXPK7LBTKEUXDXIUXF36LG
+  tmn-code: ${VNPAY_TMN_CODE:IQC0KY3H}
+  secret-key: ${VNPAY_SECRET_KEY:W2WAAITEJZAXPK7LBTKEUXDXIUXF36LG}
   version: 2.1.0
   command: pay
   ordertype: other

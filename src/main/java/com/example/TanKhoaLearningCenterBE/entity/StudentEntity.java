@@ -1,6 +1,10 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.ToString;
@@ -9,35 +13,35 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Entity
+@Document(collection = "students")
 @Data
-@Table(name = "students")
+@lombok.EqualsAndHashCode(callSuper = true)
 public class StudentEntity extends AuditEntity {
     @Id
-    @GeneratedValue
-    @Column(name = "studentId")
-    private UUID studentId;
+    private UUID studentId = UUID.randomUUID();
 
     @NotNull(message = "Name is required")
-    @Column(name = "stdName")
+    
     private String stdName;
 
     @NotNull(message = "Phone number is required")
-    @Column(name = "stdPhoneNumber", unique = true)
+    
     private String stdPhoneNumber;
 
-    @Column(name = "stdEmail")
+    
     private String stdEmail;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "parentId")
+    @DBRef(lazy = true)
+    
+    @lombok.ToString.Exclude
     private ParentEntity parentIds;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "accountId")
+    @DBRef(lazy = true)
+    
     @ToString.Exclude
     private AccountEntity accountIds;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @DBRef(lazy = true)
+    @lombok.ToString.Exclude
     private List<ClassStudentEntity> classStudents;
 }

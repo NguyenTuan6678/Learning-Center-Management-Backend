@@ -3,7 +3,7 @@ package com.example.TanKhoaLearningCenterBE.service;
 import com.example.TanKhoaLearningCenterBE.dto.TimeDTO;
 import com.example.TanKhoaLearningCenterBE.entity.TimeEntity;
 import com.example.TanKhoaLearningCenterBE.repository.TimeRepository;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateTimeRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateTimeRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

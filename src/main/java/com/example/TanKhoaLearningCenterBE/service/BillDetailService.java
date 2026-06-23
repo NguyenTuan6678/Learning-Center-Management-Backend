@@ -1,7 +1,7 @@
 package com.example.TanKhoaLearningCenterBE.service;
 
 import com.example.TanKhoaLearningCenterBE.dto.BillDetailDTO;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateBillDetailsRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateBillDetailsRequest;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

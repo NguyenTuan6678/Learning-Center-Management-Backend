@@ -2,11 +2,11 @@ package com.example.TanKhoaLearningCenterBE.service;
 
 import com.example.TanKhoaLearningCenterBE.dto.GradeDTO;
 import com.example.TanKhoaLearningCenterBE.dto.ReviewDTO;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateGradeRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateReviewRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateGradeRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateReviewRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateGradeRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateReviewRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateGradeRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateReviewRequest;
+import com.example.TanKhoaLearningCenterBE.controller.response.PageResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

@@ -8,11 +8,11 @@ import com.example.TanKhoaLearningCenterBE.exception.InvalidAccountRoleException
 import com.example.TanKhoaLearningCenterBE.exception.StudentNotFoundException;
 import com.example.TanKhoaLearningCenterBE.repository.*;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateStudentRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateStudentRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
-import jakarta.transaction.Transactional;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateStudentRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateStudentRequest;
+import com.example.TanKhoaLearningCenterBE.controller.response.FileUploadResponse;
+import com.example.TanKhoaLearningCenterBE.controller.response.PageResponse;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

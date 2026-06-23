@@ -9,10 +9,10 @@ import com.example.TanKhoaLearningCenterBE.exception.InvalidAccountRoleException
 import com.example.TanKhoaLearningCenterBE.repository.AccountRepository;
 import com.example.TanKhoaLearningCenterBE.repository.TeacherRepository;
 import com.example.TanKhoaLearningCenterBE.utils.user.Role;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateTeacherRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateTeacherRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateTeacherRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateTeacherRequest;
+import com.example.TanKhoaLearningCenterBE.controller.response.FileUploadResponse;
+import com.example.TanKhoaLearningCenterBE.controller.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

@@ -6,10 +6,11 @@ import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
 import com.example.TanKhoaLearningCenterBE.entity.TeacherEntity;
 import com.example.TanKhoaLearningCenterBE.repository.ReviewRepository;
 import com.example.TanKhoaLearningCenterBE.repository.StudentRepository;
+import com.example.TanKhoaLearningCenterBE.entity.StudentEntity;
 import com.example.TanKhoaLearningCenterBE.repository.TeacherRepository;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateReviewRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateReviewRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateReviewRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateReviewRequest;
+import com.example.TanKhoaLearningCenterBE.controller.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -72,7 +73,8 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public ResponseEntity<List<ReviewDTO>> searchReview(String name) {
-        List<ReviewEntity> result = reviewRepository.findByStudentIds_StdNameContainingIgnoreCase(name);
+        List<StudentEntity> students = studentRepository.findByStdNameContainingIgnoreCase(name);
+        List<ReviewEntity> result = reviewRepository.findByStudentIdsIn(students);
         List<ReviewDTO> dtoList = result.stream().map(ReviewDTO::new).toList();
         return ResponseEntity.ok(dtoList);
     }

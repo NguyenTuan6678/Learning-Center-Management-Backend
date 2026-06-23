@@ -1,10 +1,10 @@
 package com.example.TanKhoaLearningCenterBE.service;
 
 import com.example.TanKhoaLearningCenterBE.dto.TeacherDTO;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.CreateTeacherRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.request.UpdateTeacherRequest;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.FileUploadResponse;
-import com.example.TanKhoaLearningCenterBE.web.rest.response.PageResponse;
+import com.example.TanKhoaLearningCenterBE.controller.request.CreateTeacherRequest;
+import com.example.TanKhoaLearningCenterBE.controller.request.UpdateTeacherRequest;
+import com.example.TanKhoaLearningCenterBE.controller.response.FileUploadResponse;
+import com.example.TanKhoaLearningCenterBE.controller.response.PageResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 

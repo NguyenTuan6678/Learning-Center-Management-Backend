@@ -1,20 +1,22 @@
 package com.example.TanKhoaLearningCenterBE.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+
 import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Document(collection = "days")
 @Data
-@Table(name = "days")
+@lombok.EqualsAndHashCode(callSuper = true)
 public class DayEntity extends AuditEntity {
     @Id
-    @GeneratedValue
-    @Column(name = "dayId")
-    private UUID dayId;
+    private UUID dayId = UUID.randomUUID();
 
-    @Column(name = "day", nullable = false, unique = true)
+    
     private String day;
 }

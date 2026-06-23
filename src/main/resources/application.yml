@@ -4,11 +4,13 @@ server:
 spring:
   application:
     name: TanKhoaLearningCenterBE
+  config:
+    import: optional:classpath:application-local.yml
   main:
     allow-bean-definition-overriding: true
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb+srv://mongotut:mongo123@cluster0.pt6sdhn.mongodb.net/LearningCenter?appName=Cluster0}
+      uri: ${MONGODB_URI:mongodb://localhost:27017/LearningCenter}
 
 logging:
   level:
@@ -53,7 +55,7 @@ management:
 application:
   security:
     jwt:
-      secret-key: ${JWT_SECRET_KEY:6e5f9db3f11f7585ceaeb35550270e36ffd731f3961600dc349a92415cfdfdc7}
+      secret-key: ${JWT_SECRET_KEY:default_secret_key_please_change_in_production_1234567890}
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
@@ -61,8 +63,8 @@ application:
 vnpay:
   return-url: http://localhost:8080/api/payments/vnpay/callback
   pay-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-  tmn-code: ${VNPAY_TMN_CODE:IQC0KY3H}
-  secret-key: ${VNPAY_SECRET_KEY:W2WAAITEJZAXPK7LBTKEUXDXIUXF36LG}
+  tmn-code: ${VNPAY_TMN_CODE:default_tmn_code}
+  secret-key: ${VNPAY_SECRET_KEY:default_secret_key}
   version: 2.1.0
   command: pay
   ordertype: other
